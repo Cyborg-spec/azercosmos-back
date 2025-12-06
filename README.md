@@ -82,13 +82,33 @@ POST /api/leaks/run-detection
 
 ---
 
+### Update Leak Status
+```http
+PATCH /api/leaks/{id}/status?status={NEW|VERIFIED|FALSE_POSITIVE}
+```
+**Example:**
+```bash
+curl -X PATCH "https://azercosmos-back-production.up.railway.app/api/leaks/LK-2025-001/status?status=VERIFIED"
+```
+**Response:**
+```json
+{
+  "id": "LK-2025-001",
+  "status": "VERIFIED",
+  ...
+}
+```
+
+---
+
 ## WebSocket (Real-time Updates)
 
 ### Connection
 | Protocol | STOMP over SockJS |
 |----------|-------------------|
-| URL | `ws://localhost:8080/ws` |
-| Topic | `/topic/leaks` |
+| URL | `wss://azercosmos-back-production.up.railway.app/ws` |
+| New Leaks | `/topic/leaks` |
+| Status Updates | `/topic/leaks/updates` |
 
 ### JavaScript Example
 ```javascript
