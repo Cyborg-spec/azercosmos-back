@@ -139,7 +139,7 @@ client.activate();
 | locationName | String | Location name |
 | coordinates | Array | Polygon points [[lat, lon], ...] |
 | severity | Enum | LOW, MEDIUM, HIGH |
-| status | Enum | NEW, VERIFIED, FALSE_POSITIVE |
+| status | Enum | NEW, DISPATCHED, VERIFIED, FALSE_POSITIVE |
 | detectedBy | String | Detector satellite name |
 | revenueLoss | Number | Estimated loss in USD |
 
