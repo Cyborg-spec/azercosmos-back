@@ -1,0 +1,12 @@
+services:
+  backend:
+    build: .
+    container_name: methane-leak-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      # Persist SQLite database outside container
+      - ./data:/app/data
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/data/methane_leaks.db
+    restart: unless-stopped

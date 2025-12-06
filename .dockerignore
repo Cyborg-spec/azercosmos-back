@@ -1,0 +1,24 @@
+# Ignore build artifacts
+build/
+.gradle/
+*.class
+
+# Ignore IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Ignore logs
+*.log
+
+# Ignore local database (will be created in container)
+*.db
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore documentation
+*.md
+!README.md
