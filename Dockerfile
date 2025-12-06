@@ -1,11 +1,16 @@
 # Build stage
-FROM gradle:8.5-jdk21 AS build
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
-COPY --chown=gradle:gradle . .
-RUN gradle build -x test --no-daemon
+COPY gradle gradle
+COPY gradlew .
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
+RUN chmod +x gradlew
+RUN ./gradlew build -x test --no-daemon
 
 # Run stage
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 # Create directory for SQLite database
@@ -21,4 +26,4 @@ EXPOSE 8080
 ENV SPRING_DATASOURCE_URL=jdbc:sqlite:/app/data/methane_leaks.db
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "--enable-native-access=ALL-UNNAMED", "-jar", "app.jar"]
