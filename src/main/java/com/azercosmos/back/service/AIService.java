@@ -18,15 +18,21 @@ public class AIService {
 
     private static final Random random = new Random();
 
-    private static final String[] LOCATION_NAMES = {
-            "Shah Deniz Field (Offshore)",
-            "Baku Oil Refinery Complex",
-            "Sangachal Terminal",
-            "Neft Dashlari Platform",
-            "Chirag Field (Offshore)",
-            "Gunashli Field",
-            "Heydar Aliyev Refinery",
-            "West Absheron Gas Field"
+    // Onshore locations in Azerbaijan with their approximate coordinates
+    private static final Object[][] LAND_LOCATIONS = {
+            // {name, centerLat, centerLon}
+            { "Baku Oil Refinery Complex", 40.4093, 49.8671 },
+            { "Sangachal Terminal", 40.1833, 49.4667 },
+            { "Heydar Aliyev Refinery", 40.3456, 49.8234 },
+            { "Sumgait Industrial Zone", 40.5897, 49.6317 },
+            { "Shirvan Oil Fields", 39.9333, 48.9167 },
+            { "Neftchala Processing Plant", 39.3833, 49.2500 },
+            { "Bibi-Heybat Oil Field", 40.3167, 49.8000 },
+            { "Balakhany Oil Field", 40.4333, 49.9333 },
+            { "Surakhany Gas Facility", 40.4167, 50.0167 },
+            { "Gobustan Gas Fields", 40.0833, 49.4167 },
+            { "Garadagh Industrial Zone", 40.3500, 49.9667 },
+            { "Lokbatan Oil Field", 40.3333, 49.7500 }
     };
 
     private static final String[] DETECTORS = {
@@ -68,21 +74,30 @@ public class AIService {
     }
 
     private LeakDTO generateMockLeak() {
-        double baseLat = 39.5 + random.nextDouble() * 1.5;
-        double baseLon = 49.5 + random.nextDouble() * 1.5;
+        // Pick a random land location
+        Object[] location = LAND_LOCATIONS[random.nextInt(LAND_LOCATIONS.length)];
+        String locationName = (String) location[0];
+        double baseLat = (Double) location[1];
+        double baseLon = (Double) location[2];
 
+        // Add small random offset to base coordinates
+        baseLat += (random.nextDouble() - 0.5) * 0.02;
+        baseLon += (random.nextDouble() - 0.5) * 0.02;
+
+        // Generate polygon (4-6 points)
         int numPoints = 4 + random.nextInt(3);
         List<double[]> coordinates = new ArrayList<>();
 
-        double polygonSize = 0.02 + random.nextDouble() * 0.03;
+        // Polygon size (smaller for land facilities)
+        double polygonSize = 0.005 + random.nextDouble() * 0.01;
 
         for (int i = 0; i < numPoints; i++) {
             double angle = 2 * Math.PI * i / numPoints;
             double lat = baseLat + polygonSize * Math.cos(angle);
             double lon = baseLon + polygonSize * Math.sin(angle);
             coordinates.add(new double[] {
-                    Math.round(lat * 1000.0) / 1000.0,
-                    Math.round(lon * 1000.0) / 1000.0
+                    Math.round(lat * 10000.0) / 10000.0,
+                    Math.round(lon * 10000.0) / 10000.0
             });
         }
 
@@ -104,7 +119,7 @@ public class AIService {
 
         return LeakDTO.builder()
                 .date(LocalDate.now())
-                .locationName(LOCATION_NAMES[random.nextInt(LOCATION_NAMES.length)])
+                .locationName(locationName)
                 .coordinates(coordinates)
                 .severity(severity)
                 .status(LeakStatus.NEW)
